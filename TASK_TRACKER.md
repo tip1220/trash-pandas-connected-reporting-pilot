@@ -10,30 +10,29 @@ Trash Pandas Connected Reporting Pilot
 
 ## Current Project Status
 
-The Python data generation, synthetic data modeling, quality checks, Tableau-ready export files, and Snowflake reporting layer are complete.
+The Python data generation, synthetic data modeling, quality checks, Tableau-ready export files, Snowflake reporting layer, and connected-reporting documentation refresh are complete.
 
 The current phase is **Tableau Public dashboard build**.
 
 Current phase:
 
-Tableau Public dashboard build using the final export files.
+Build the Tableau Public dashboard using the final export files.
+
+Primary dashboard thesis:
+
+Siloed reports show activity. Connected reporting shows decisions.
 
 Snowflake status:
 
 Complete.
 
-Completed Snowflake files:
+Documentation status:
 
-- `SNOWFLAKE_LOAD_GUIDE.md`
-- `SNOWFLAKE_SCHEMA_PLAN.md`
-- `sql/00_snowflake_setup.sql`
-- `sql/01_create_export_tables.sql`
-- `sql/02_load_export_tables.sql`
-- `sql/03_validate_export_tables.sql`
-- `sql/04_create_analytics_views.sql`
-- `sql/05_business_question_queries.sql`
+Complete for current pre-Tableau phase.
 
-Tableau comes after Snowflake validation.
+Tableau status:
+
+Not started.
 
 ---
 
@@ -66,7 +65,41 @@ Key files:
 
 ---
 
-### 2. Data Source Map
+### 2. Connected Reporting Reframe
+
+Status: Complete
+
+Completed:
+
+- Reframed the project around the central thesis: siloed reports show activity, connected reporting shows decisions
+- Shifted outward-facing language away from a generic dashboard build and toward a connected reporting proof of concept
+- Updated project positioning to show what becomes possible when ticketing, scans, promotions, merch, concessions, group sales, engagement, and CRM follow-up data are analyzed together
+- Reframed the project as a solution for growth-market sports organizations that may need practical ways to connect business data across departments
+- Updated KPI language to better reflect connected reporting value
+
+Key language:
+
+- Demand Created
+- Attendance Converted
+- Demand-to-Attendance Conversion
+- Lost Attendance Opportunity
+- Value After Arrival
+- Future Value Pipeline
+- Actionable CRM Signals
+- Connected Value Score
+
+Key files updated:
+
+- `README.md`
+- `PROJECT_CHARTER.md`
+- `BUSINESS_QUESTIONS.md`
+- `DASHBOARD_PLAN.md`
+- `TABLEAU_BUILD_GUIDE.md`
+- `sql/05_business_question_queries.sql`
+
+---
+
+### 3. Data Source Map
 
 Status: Complete
 
@@ -86,7 +119,7 @@ Primary file:
 
 ---
 
-### 3. Public Data Foundation
+### 4. Public Data Foundation
 
 Status: Complete
 
@@ -119,7 +152,7 @@ Status notes:
 
 ---
 
-### 4. Synthetic Fan Layer
+### 5. Synthetic Fan Layer
 
 Status: Complete
 
@@ -144,7 +177,7 @@ Key scripts:
 
 ---
 
-### 5. Synthetic Ticketing Layer
+### 6. Synthetic Ticketing Layer
 
 Status: Complete
 
@@ -182,7 +215,7 @@ Final modeled totals:
 
 ---
 
-### 6. Group Sales Layer
+### 7. Group Sales Layer
 
 Status: Complete
 
@@ -214,7 +247,7 @@ Final modeled totals:
 
 ---
 
-### 7. Merch Layer
+### 8. Merch Layer
 
 Status: Complete
 
@@ -243,7 +276,7 @@ Final modeled totals:
 
 ---
 
-### 8. Concession Layer
+### 9. Concession Layer
 
 Status: Complete
 
@@ -272,7 +305,7 @@ Final modeled totals:
 
 ---
 
-### 9. Sponsorship Context Layer
+### 10. Sponsorship Context Layer
 
 Status: Complete
 
@@ -302,7 +335,7 @@ Final modeled totals:
 
 ---
 
-### 10. Fan Engagement Layer
+### 11. Fan Engagement Layer
 
 Status: Complete
 
@@ -336,7 +369,7 @@ Status note:
 
 ---
 
-### 11. Follow-Up Opportunity Layer
+### 12. Follow-Up Opportunity Layer
 
 Status: Complete
 
@@ -371,7 +404,7 @@ Final modeled totals:
 
 ---
 
-### 12. Homestand Summary Export
+### 13. Homestand Summary Export
 
 Status: Complete
 
@@ -402,7 +435,7 @@ Final modeled totals:
 
 ---
 
-### 13. Promotion Scorecard Export
+### 14. Promotion Scorecard Export
 
 Status: Complete
 
@@ -434,7 +467,7 @@ Final modeled totals:
 
 ---
 
-### 14. CRM Follow-Up Queue Export
+### 15. CRM Follow-Up Queue Export
 
 Status: Complete
 
@@ -468,7 +501,7 @@ Final modeled totals:
 
 ---
 
-### 15. Export Manifest
+### 16. Export Manifest
 
 Status: Complete
 
@@ -483,7 +516,7 @@ Key output:
 
 ---
 
-### 16. Snowflake Reporting Layer
+### 17. Snowflake Reporting Layer
 
 Status: Complete
 
@@ -497,6 +530,7 @@ Completed:
 - Validated row counts and key totals
 - Created analytics views
 - Created business-question SQL queries
+- Reframed business-question SQL comments and aliases around connected reporting value
 - Confirmed Snowflake layer supports the project’s connected reporting story
 
 Key files:
@@ -522,41 +556,52 @@ Snowflake validation targets:
 
 ---
 
-### 17. Documentation Updates
+### 18. Documentation Updates
 
-Status: In progress
+Status: Complete for current pre-Tableau phase
 
 Completed:
 
-- Updated README for connected reporting story
-- Updated dashboard plan around final exports
-- Added Tableau build guide
-- Updated build order for dashboard phase
+- Updated README around the connected reporting thesis
+- Updated dashboard plan around siloed reports becoming actionable insights
+- Updated Tableau build guide with connected KPI labels and page-level story
+- Updated project charter around connected reporting value
+- Updated business questions around the main question: what new decisions become possible when sports business data sources are connected?
+- Updated Snowflake business-question SQL comments and aliases around connected reporting language
+- Added project requirements document
+- Updated build order for Tableau phase
 - Added Snowflake schema plan
 - Added Snowflake load guide
 - Added Snowflake SQL files to repo
-
-Still needed:
-
-- Add Tableau Public link after dashboard is published
-- Add dashboard screenshots after dashboard is built
-- Add final portfolio polish after dashboard is published
+- Updated changelog with Snowflake and connected-reporting reframe notes
 
 Key files:
 
 - `README.md`
+- `PROJECT_CHARTER.md`
+- `BUSINESS_QUESTIONS.md`
+- `REQUIREMENTS.md`
 - `DASHBOARD_PLAN.md`
 - `TABLEAU_BUILD_GUIDE.md`
 - `BUILD_ORDER.md`
 - `TASK_TRACKER.md`
+- `CHANGELOG.md`
 - `SNOWFLAKE_LOAD_GUIDE.md`
 - `SNOWFLAKE_SCHEMA_PLAN.md`
+- `sql/05_business_question_queries.sql`
+
+Still needed after Tableau build:
+
+- Add Tableau Public link
+- Add dashboard screenshots
+- Add final portfolio polish
+- Add final project writeup if needed
 
 ---
 
 ## Current Required Phase
 
-### Phase 18: Tableau Public Dashboard Build
+### Phase 19: Tableau Public Dashboard Build
 
 Status: Next
 
@@ -572,25 +617,31 @@ Primary data sources:
 
 Dashboard pages:
 
-1. Homestand Intelligence
-2. Promotion Performance Scorecard
+1. Connected Homestand Intelligence
+2. Promotion Value Scorecard
 3. CRM Follow-Up Queue
 
 Status note:
 
-The Snowflake reporting layer has been created, loaded, validated, and documented. Tableau Public will use the final CSV exports so the published dashboard remains accessible and portfolio-friendly.
+The project has been reframed around connected reporting value.
+
+The Snowflake reporting layer has been created, loaded, validated, queried, and documented.
+
+Tableau Public will use the final CSV exports so the published dashboard remains accessible and portfolio-friendly.
 
 ---
 
 ## Tableau Phase
 
-### Phase 18: Tableau Public Dashboard Build
+### Phase 19: Tableau Public Dashboard Build
 
 Status: Next
 
 Goal:
 
-Build the three-page Tableau Public dashboard using final export files.
+Build the three-page Tableau Public dashboard around this thesis:
+
+Siloed reports show activity. Connected reporting shows decisions.
 
 Primary data sources:
 
@@ -600,8 +651,8 @@ Primary data sources:
 
 Dashboard pages:
 
-1. Homestand Intelligence
-2. Promotion Performance Scorecard
+1. Connected Homestand Intelligence
+2. Promotion Value Scorecard
 3. CRM Follow-Up Queue
 
 Primary guide:
@@ -612,7 +663,7 @@ Status note:
 
 Tableau Public will use CSV exports.
 
-Snowflake has already been used as the warehouse/reporting layer and SQL validation layer.
+Snowflake has already been used as the warehouse/reporting layer, SQL validation layer, analytics view layer, and business-question layer.
 
 ---
 
@@ -630,9 +681,13 @@ Primary files:
 
 Dashboard pages:
 
-1. Homestand Intelligence
-2. Promotion Performance Scorecard
+1. Connected Homestand Intelligence
+2. Promotion Value Scorecard
 3. CRM Follow-Up Queue
+
+Dashboard thesis:
+
+Siloed reports show activity. Connected reporting shows decisions.
 
 ---
 
@@ -659,8 +714,8 @@ Recommended folder:
 
 Suggested files:
 
-- `images/homestand_intelligence.png`
-- `images/promotion_scorecard.png`
+- `images/connected_homestand_intelligence.png`
+- `images/promotion_value_scorecard.png`
 - `images/crm_follow_up_queue.png`
 
 ---
@@ -677,6 +732,7 @@ Tasks:
 - Add Snowflake/SQL summary
 - Confirm synthetic data disclaimer is clear
 - Confirm no claim of internal Trash Pandas access
+- Confirm project framing stays focused on connected reporting, not just dashboard creation
 
 Potential file:
 
@@ -696,7 +752,7 @@ Focus:
 
 - Coach-to-analyst story
 - Sports business reporting
-- Connected data
+- Connected data silos
 - Snowflake + SQL + Tableau
 - GitHub project link
 - Tableau dashboard link
@@ -713,10 +769,12 @@ The current build is complete when:
 - Snowflake reporting layer is built
 - SQL validation queries pass
 - Business-question SQL file exists
+- Project documentation is reframed around connected reporting value
 - Tableau Public dashboard is published
 - README links to Tableau Public
 - README clearly explains public vs synthetic data
 - README explains Snowflake/SQL reporting layer
+- README and dashboard clearly explain the connected-reporting thesis
 
 Current build status:
 
@@ -725,6 +783,7 @@ Current build status:
 - Final exports: Complete
 - Snowflake reporting layer: Complete
 - SQL files: Complete
+- Documentation reframe: Complete for pre-Tableau phase
 - Tableau dashboard: Not started
 - Final portfolio polish: Not started
 
@@ -743,5 +802,18 @@ Use these final export files:
 1. `data/exports/homestand_summary.csv`
 2. `data/exports/promotion_scorecard.csv`
 3. `data/exports/crm_follow_up_queue.csv`
+
+Build Page 1 first:
+
+- Connected Homestand Intelligence
+
+First KPI sheets:
+
+1. Demand Created
+2. Attendance Converted
+3. Demand-to-Attendance Conversion
+4. Lost Attendance Opportunity
+5. Value After Arrival
+6. Connected Value Score
 
 Do not change the Snowflake layer unless the dashboard build reveals a field issue.
