@@ -2,7 +2,8 @@ USE ROLE ACCOUNTADMIN;
 USE WAREHOUSE TP_REPORTING_WH;
 USE DATABASE TRASH_PANDAS_CONNECTED_REPORTING;
 
--- 1. Which homestands created the most total value?
+-- 1. What new decisions become possible when homestand data sources are connected?
+-- Connects ticket demand, scan conversion, in-park value, CRM opportunity, and recommended focus.
 
 SELECT
     season,
@@ -11,48 +12,28 @@ SELECT
     homestand_end_date,
     game_count,
     opponents,
-    tickets_sold,
-    scanned_attendance,
-    scan_rate,
-    no_show_rate,
+    tickets_sold AS demand_created,
+    scanned_attendance AS attendance_converted,
+    scan_rate AS demand_to_attendance_conversion,
+    no_show_ticket_quantity AS lost_attendance_quantity,
+    no_show_rate AS lost_attendance_opportunity_rate,
     net_ticket_revenue,
     merch_net_sales,
     concession_net_sales,
-    total_revenue_indicator,
-    revenue_per_scanned_fan,
-    in_park_spend_per_scanned_fan,
-    homestand_total_value_index,
+    in_park_spend_per_scanned_fan AS value_after_arrival_per_fan,
+    revenue_per_scanned_fan AS quality_of_attendance,
+    future_revenue_opportunity AS future_value_pipeline,
+    homestand_total_value_index AS connected_value_score,
     recommended_focus
 FROM ANALYTICS.V_HOMESTAND_SUMMARY
 ORDER BY
-    total_revenue_indicator DESC,
-    homestand_total_value_index DESC
-LIMIT 10;
-
-
--- 2. Which homestands had the strongest in-park spend per scanned fan?
-
-SELECT
-    season,
-    homestand_id,
-    homestand_start_date,
-    homestand_end_date,
-    game_count,
-    opponents,
-    scanned_attendance,
-    merch_net_sales,
-    concession_net_sales,
-    in_park_spend_per_scanned_fan,
-    total_revenue_indicator,
-    recommended_focus
-FROM ANALYTICS.V_HOMESTAND_SUMMARY
-ORDER BY
-    in_park_spend_per_scanned_fan DESC,
+    connected_value_score DESC,
     total_revenue_indicator DESC
 LIMIT 10;
 
 
--- 3. Which homestands had the most no-show recovery opportunity?
+-- 2. Which homestands created the strongest value after fans arrived?
+-- Connects scan attendance to merch and concession behavior.
 
 SELECT
     season,
@@ -61,23 +42,48 @@ SELECT
     homestand_end_date,
     game_count,
     opponents,
-    tickets_sold,
-    scanned_attendance,
-    no_show_ticket_quantity,
-    no_show_rate,
-    follow_up_opportunity_count,
-    high_priority_opportunity_count,
-    crm_follow_up_task_count,
-    future_revenue_opportunity,
+    scanned_attendance AS attendance_converted,
+    merch_net_sales,
+    concession_net_sales,
+    in_park_spend_per_scanned_fan AS value_after_arrival_per_fan,
+    revenue_per_scanned_fan AS quality_of_attendance,
+    total_revenue_indicator,
     recommended_focus
 FROM ANALYTICS.V_HOMESTAND_SUMMARY
 ORDER BY
-    no_show_ticket_quantity DESC,
-    future_revenue_opportunity DESC
+    value_after_arrival_per_fan DESC,
+    total_revenue_indicator DESC
 LIMIT 10;
 
 
--- 4. Which promotions should return?
+-- 3. Which homestands sold tickets but created lost attendance opportunity?
+-- Connects ticketing and scan data to show where demand did not convert.
+
+SELECT
+    season,
+    homestand_id,
+    homestand_start_date,
+    homestand_end_date,
+    game_count,
+    opponents,
+    tickets_sold AS demand_created,
+    scanned_attendance AS attendance_converted,
+    no_show_ticket_quantity AS lost_attendance_quantity,
+    no_show_rate AS lost_attendance_opportunity_rate,
+    follow_up_opportunity_count AS actionable_crm_signals,
+    high_priority_opportunity_count AS high_priority_signals,
+    crm_follow_up_task_count AS crm_tasks_created,
+    future_revenue_opportunity AS future_value_pipeline,
+    recommended_focus
+FROM ANALYTICS.V_HOMESTAND_SUMMARY
+ORDER BY
+    lost_attendance_quantity DESC,
+    future_value_pipeline DESC
+LIMIT 10;
+
+
+-- 4. Which promotions created enough connected value to return?
+-- Connects demand, scan rate, revenue quality, in-park spend, repeat behavior, and recommendation logic.
 
 SELECT
     season,
@@ -87,23 +93,24 @@ SELECT
     promo_name,
     promo_category,
     promo_type,
-    tickets_sold,
-    scanned_attendance,
-    scan_rate,
-    revenue_per_scanned_fan,
-    in_park_spend_per_scanned_fan,
-    repeat_buyer_rate,
-    total_value_index,
+    tickets_sold AS demand_created,
+    scanned_attendance AS attendance_converted,
+    scan_rate AS demand_to_attendance_conversion,
+    revenue_per_scanned_fan AS quality_of_attendance,
+    in_park_spend_per_scanned_fan AS value_after_arrival_per_fan,
+    repeat_buyer_rate AS repeat_buyer_signal,
+    total_value_index AS connected_value_score,
     recommendation,
     recommendation_reason
 FROM ANALYTICS.V_PROMOTION_SCORECARD
 WHERE LOWER(recommendation) = 'return'
 ORDER BY
-    total_value_index DESC,
-    revenue_per_scanned_fan DESC;
+    connected_value_score DESC,
+    quality_of_attendance DESC;
 
 
--- 5. Which promotions should be reworked?
+-- 5. Which promotions need to be reworked?
+-- Shows promotions that created some value but may need redesign.
 
 SELECT
     season,
@@ -113,23 +120,24 @@ SELECT
     promo_name,
     promo_category,
     promo_type,
-    scanned_attendance,
-    scan_rate,
-    no_show_rate,
-    revenue_per_scanned_fan,
-    in_park_spend_per_scanned_fan,
-    total_value_index,
+    scanned_attendance AS attendance_converted,
+    scan_rate AS demand_to_attendance_conversion,
+    no_show_rate AS lost_attendance_opportunity_rate,
+    revenue_per_scanned_fan AS quality_of_attendance,
+    in_park_spend_per_scanned_fan AS value_after_arrival_per_fan,
+    total_value_index AS connected_value_score,
     recommendation,
     recommendation_reason
 FROM ANALYTICS.V_PROMOTION_SCORECARD
 WHERE LOWER(recommendation) = 'rework'
 ORDER BY
-    total_value_index DESC,
-    scanned_attendance DESC
+    connected_value_score DESC,
+    attendance_converted DESC
 LIMIT 25;
 
 
 -- 6. Which promotions should be retired?
+-- Identifies promotions with weaker connected value across attendance, revenue, and follow-up signals.
 
 SELECT
     season,
@@ -139,41 +147,43 @@ SELECT
     promo_name,
     promo_category,
     promo_type,
-    scanned_attendance,
-    scan_rate,
-    no_show_rate,
-    revenue_per_scanned_fan,
-    in_park_spend_per_scanned_fan,
-    total_value_index,
+    scanned_attendance AS attendance_converted,
+    scan_rate AS demand_to_attendance_conversion,
+    no_show_rate AS lost_attendance_opportunity_rate,
+    revenue_per_scanned_fan AS quality_of_attendance,
+    in_park_spend_per_scanned_fan AS value_after_arrival_per_fan,
+    total_value_index AS connected_value_score,
     recommendation,
     recommendation_reason
 FROM ANALYTICS.V_PROMOTION_SCORECARD
 WHERE LOWER(recommendation) = 'retire'
 ORDER BY
-    total_value_index ASC,
-    revenue_per_scanned_fan ASC;
+    connected_value_score ASC,
+    quality_of_attendance ASC;
 
 
--- 7. Which promotion categories produced the strongest average value?
+-- 7. Which promotion categories produced the strongest connected value?
+-- Aggregates promotion performance across attendance, conversion, revenue quality, and future opportunity.
 
 SELECT
     promo_category,
     COUNT(*) AS promotion_count,
-    ROUND(AVG(total_value_index), 2) AS avg_total_value_index,
-    ROUND(AVG(scanned_attendance), 2) AS avg_scanned_attendance,
-    ROUND(AVG(scan_rate), 4) AS avg_scan_rate,
-    ROUND(AVG(no_show_rate), 4) AS avg_no_show_rate,
-    ROUND(AVG(revenue_per_scanned_fan), 2) AS avg_revenue_per_scanned_fan,
-    ROUND(AVG(in_park_spend_per_scanned_fan), 2) AS avg_in_park_spend_per_scanned_fan,
-    ROUND(SUM(future_revenue_opportunity), 2) AS total_future_revenue_opportunity
+    ROUND(AVG(total_value_index), 2) AS avg_connected_value_score,
+    ROUND(AVG(scanned_attendance), 2) AS avg_attendance_converted,
+    ROUND(AVG(scan_rate), 4) AS avg_demand_to_attendance_conversion,
+    ROUND(AVG(no_show_rate), 4) AS avg_lost_attendance_opportunity_rate,
+    ROUND(AVG(revenue_per_scanned_fan), 2) AS avg_quality_of_attendance,
+    ROUND(AVG(in_park_spend_per_scanned_fan), 2) AS avg_value_after_arrival_per_fan,
+    ROUND(SUM(future_revenue_opportunity), 2) AS future_value_pipeline
 FROM ANALYTICS.V_PROMOTION_SCORECARD
 GROUP BY promo_category
 ORDER BY
-    avg_total_value_index DESC,
-    avg_revenue_per_scanned_fan DESC;
+    avg_connected_value_score DESC,
+    avg_quality_of_attendance DESC;
 
 
--- 8. Which promotions drove attendance lift but weak revenue lift?
+-- 8. Which promotions lifted attendance but underperformed on revenue quality?
+-- Shows why attendance alone is not enough to evaluate promotion performance.
 
 SELECT
     season,
@@ -183,24 +193,25 @@ SELECT
     promo_name,
     promo_category,
     promo_type,
-    scanned_attendance,
+    scanned_attendance AS attendance_converted,
     baseline_scanned_attendance,
-    scanned_attendance_lift_vs_slot,
-    revenue_per_scanned_fan,
+    scanned_attendance_lift_vs_slot AS attendance_lift_vs_schedule_slot,
+    revenue_per_scanned_fan AS quality_of_attendance,
     baseline_revenue_per_scanned_fan,
-    revenue_lift_per_scanned_fan,
-    total_value_index,
+    revenue_lift_per_scanned_fan AS revenue_quality_lift,
+    total_value_index AS connected_value_score,
     recommendation
 FROM ANALYTICS.V_PROMOTION_SCORECARD
 WHERE scanned_attendance_lift_vs_slot > 0
   AND revenue_lift_per_scanned_fan < 0
 ORDER BY
-    scanned_attendance_lift_vs_slot DESC,
-    revenue_lift_per_scanned_fan ASC
+    attendance_lift_vs_schedule_slot DESC,
+    revenue_quality_lift ASC
 LIMIT 25;
 
 
--- 9. Which promotions drove the strongest in-park spend?
+-- 9. Which promotions created the strongest value after arrival?
+-- Connects promotion context to merch and concession behavior.
 
 SELECT
     season,
@@ -210,25 +221,26 @@ SELECT
     promo_name,
     promo_category,
     promo_type,
-    scanned_attendance,
+    scanned_attendance AS attendance_converted,
     merch_net_sales,
     concession_net_sales,
-    in_park_revenue,
+    in_park_revenue AS value_after_arrival,
     merch_per_scanned_fan,
     concession_per_scanned_fan,
-    in_park_spend_per_scanned_fan,
+    in_park_spend_per_scanned_fan AS value_after_arrival_per_fan,
     merch_lift_per_scanned_fan,
     concession_lift_per_scanned_fan,
-    total_value_index,
+    total_value_index AS connected_value_score,
     recommendation
 FROM ANALYTICS.V_PROMOTION_SCORECARD
 ORDER BY
-    in_park_spend_per_scanned_fan DESC,
-    in_park_revenue DESC
+    value_after_arrival_per_fan DESC,
+    value_after_arrival DESC
 LIMIT 25;
 
 
--- 10. Which fans or accounts should be prioritized for follow-up?
+-- 10. Which fans or accounts become actionable when behavior from multiple systems is connected?
+-- Connects ticketing, scans, spend, engagement, opportunity scoring, and CRM ownership.
 
 SELECT
     priority_rank,
@@ -244,7 +256,7 @@ SELECT
     source_signal,
     suggested_action,
     due_date,
-    future_revenue_opportunity,
+    future_revenue_opportunity AS future_value_pipeline,
     repeat_likelihood_score,
     upgrade_potential_score,
     entity_total_value,
@@ -257,11 +269,12 @@ LIMIT 100;
 
 
 -- 11. Which CRM action buckets are driving the queue?
+-- Shows whether connected reporting is creating recovery, upgrade, retention, or renewal work.
 
 SELECT
     executive_action_bucket,
     SUM(task_count) AS task_count,
-    ROUND(SUM(total_future_revenue_opportunity), 2) AS total_future_revenue_opportunity,
+    ROUND(SUM(total_future_revenue_opportunity), 2) AS future_value_pipeline,
     ROUND(AVG(avg_priority_score), 2) AS avg_priority_score,
     ROUND(AVG(avg_repeat_likelihood_score), 2) AS avg_repeat_likelihood_score,
     ROUND(AVG(avg_upgrade_potential_score), 2) AS avg_upgrade_potential_score
@@ -269,31 +282,33 @@ FROM ANALYTICS.V_CRM_ACTION_BUCKET_SUMMARY
 GROUP BY executive_action_bucket
 ORDER BY
     task_count DESC,
-    total_future_revenue_opportunity DESC;
+    future_value_pipeline DESC;
 
 
 -- 12. Which teams own the follow-up workload?
+-- Turns connected insight into operational ownership.
 
 SELECT
     assigned_team,
     SUM(task_count) AS task_count,
-    ROUND(SUM(total_future_revenue_opportunity), 2) AS total_future_revenue_opportunity,
+    ROUND(SUM(total_future_revenue_opportunity), 2) AS future_value_pipeline,
     ROUND(AVG(avg_priority_score), 2) AS avg_priority_score
 FROM ANALYTICS.V_CRM_ACTION_BUCKET_SUMMARY
 GROUP BY assigned_team
 ORDER BY
     task_count DESC,
-    total_future_revenue_opportunity DESC;
+    future_value_pipeline DESC;
 
 
--- 13. Which assigned teams own each action bucket?
+-- 13. Which teams own each type of CRM action?
+-- Shows workload by team, action bucket, and priority band.
 
 SELECT
     assigned_team,
     executive_action_bucket,
     priority_band,
     task_count,
-    total_future_revenue_opportunity,
+    total_future_revenue_opportunity AS future_value_pipeline,
     avg_priority_score,
     avg_repeat_likelihood_score,
     avg_upgrade_potential_score
@@ -305,6 +320,7 @@ ORDER BY
 
 
 -- 14. Which hidden-value fans should be reviewed first?
+-- Finds fans who may be undervalued if the team only looks at ticket spend.
 
 SELECT
     priority_rank,
@@ -323,9 +339,9 @@ SELECT
     fan_scan_rate,
     fan_no_show_rate,
     fan_engagement_count,
-    future_revenue_opportunity
+    future_revenue_opportunity AS future_value_pipeline
 FROM ANALYTICS.V_CRM_FOLLOW_UP_QUEUE
-WHERE entity_type = 'fan'
+WHERE LOWER(entity_type) = 'fan'
   AND fan_hidden_value_flag = TRUE
 ORDER BY
     priority_rank ASC
@@ -333,6 +349,7 @@ LIMIT 100;
 
 
 -- 15. Which group accounts should group sales prioritize?
+-- Connects account activity, group revenue, scan behavior, renewal status, and future opportunity.
 
 SELECT
     priority_rank,
@@ -353,9 +370,9 @@ SELECT
     account_group_revenue,
     account_avg_group_scan_rate,
     account_total_value,
-    future_revenue_opportunity
+    future_revenue_opportunity AS future_value_pipeline
 FROM ANALYTICS.V_CRM_FOLLOW_UP_QUEUE
-WHERE entity_type = 'account'
+WHERE LOWER(entity_type) = 'account'
 ORDER BY
     priority_rank ASC
 LIMIT 100;

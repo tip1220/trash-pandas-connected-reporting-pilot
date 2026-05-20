@@ -6,8 +6,6 @@ A proof-of-concept showing how a growth-market sports organization could connect
 
 The project uses the Rocket City Trash Pandas as the portfolio case study.
 
-The goal is not just to build a dashboard.
-
 The goal is to show what becomes possible when ticketing, scans, promotions, merch, concessions, group sales, fan engagement, and CRM follow-up data are analyzed together.
 
 ## Business Problem
@@ -65,7 +63,7 @@ This project does not claim access to internal team systems.
 
 The original idea was a CRM analytics pilot.
 
-The stronger business problem became connected reporting.
+After a information gathering phone interview, the stronger business problem became connected reporting.
 
 A team may already have the data it needs.
 
